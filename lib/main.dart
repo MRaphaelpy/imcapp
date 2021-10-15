@@ -15,6 +15,29 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController pesoController = TextEditingController();
+  TextEditingController alturaController = TextEditingController();
+
+  String _result = "Informe seus Dados";
+
+  void _reset() {
+    pesoController.text = "";
+    alturaController.text = "";
+    _result = "Informe seus Dados";
+  }
+
+  void _calculed() {
+    setState(() {
+      double peso = double.parse(pesoController.text);
+      double altura = double.parse(alturaController.text) / 100;
+
+      double imc = peso / (altura * altura);
+      if (imc < 18.6) {
+        _result = "(${imc.toStringAsPrecision(3)}) Voce esta Abaixo do peso :(";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +45,7 @@ class _HomeState extends State<Home> {
           title: Text("Calculadora de IMC"),
           centerTitle: true,
           backgroundColor: Colors.purple,
-          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.refresh))],
+          actions: [IconButton(onPressed: _reset, icon: Icon(Icons.refresh))],
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -39,6 +62,7 @@ class _HomeState extends State<Home> {
                 ),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.purple, fontSize: 25.0),
+                controller: pesoController,
               ),
               TextField(
                 keyboardType: TextInputType.number,
@@ -46,13 +70,14 @@ class _HomeState extends State<Home> {
                   labelText: "Digite sua altura em (cm)",
                   labelStyle: TextStyle(color: Colors.purple, fontSize: 25.0),
                 ),
+                controller: alturaController,
               ),
               Padding(
                 padding: EdgeInsets.only(top: 20, bottom: 20),
                 child: Container(
                   height: 50,
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: _calculed,
                     child: Text(
                       "Calcular",
                       style: TextStyle(color: Colors.white, fontSize: 25),
@@ -62,7 +87,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
               Text(
-                "Info",
+                "$_result",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.purple, fontSize: 25),
               )
